@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.9;
 
+// TODO / ideas
+//  - remove startTime must be in future requirement
+//  - add createdAt param
+
 /**
  * @dev Main Blockracy contract
  * currently contains all logic and token issuance
@@ -49,6 +53,17 @@ contract Blockracy {
      * @dev Event emitted when vote placed
      */
     event VotePlaced(uint proposalId, address voter, bool voteAnswer);
+
+    /**
+     * @dev Returns all proposals
+     *
+     * TODO must remove and manage access lists via non-dynamic array or mapping
+     *  not blockchain safe, easily attackable
+     *
+     */
+    function getAllProposals() public view returns (Proposal[] memory) {
+        return proposals;
+    }
 
     /**
      * @dev Creates a new proposal
