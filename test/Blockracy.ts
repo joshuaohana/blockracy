@@ -24,7 +24,7 @@ describe("Blockracy", function () {
       const title = "Proposal 1";
       const description = "It's a proposal";
       const nowInSecs = Math.floor(new Date().getTime() / 1000);
-      const startTime = nowInSecs + 1;
+      const startTime = nowInSecs;
       const endTime = startTime + 5 * 60;
 
       const submitTx = await blockracyContract.submitProposal(
@@ -46,10 +46,6 @@ describe("Blockracy", function () {
     });
 
     it("Should emit ProposalCreated event when proposal created", async function () {
-      expect(0).to.equal(1);
-    });
-
-    it("Should not accept a proposal startTime in the past", async function () {
       expect(0).to.equal(1);
     });
 

@@ -3,6 +3,14 @@
     <q-header>
       <q-toolbar>
         <q-toolbar-title> Blockracy </q-toolbar-title>
+        <span v-if="walletStore.connectedAddress">{{
+          walletStore.connectedAddress
+        }}</span>
+        <q-btn
+          v-if="!walletStore.connectedAddress"
+          label="connect"
+          @click="connect"
+        />
       </q-toolbar>
     </q-header>
 
@@ -13,28 +21,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { Notify } from 'quasar';
 
 import wallet from '../services/wallet.service';
 import { networkInfo } from '../services/network.info';
+import { WalletStore, useWalletStore } from '../stores/wallet.store';
 
 export default defineComponent({
   name: 'MainLayout',
 
-  data: function () {
+  setup() {
     return {
-      isSmartBrowser: false,
+      isSmartBrowser: ref<boolean>(false),
+      walletStore: ref<WalletStore>({} as WalletStore),
     };
   },
 
-  // TODO create smartBrowser check and wallet and network and etc...
-
   created: async function () {
+    this.walletStore = useWalletStore();
+
     this.isSmartBrowser = wallet.checkBrowser();
-    // console.log('isSmartBrowser:', isSmartBrowser);
     if (!this.isSmartBrowser) {
-      // this.noSmartBrowserModal = true;
       Notify.create({
         type: 'negative',
         message: 'Need connected wallet or smart browser',
@@ -42,11 +50,23 @@ export default defineComponent({
       return;
     }
 
+    const isRightNetwork = await wallet.isRightNetwork();
+    if (!isRightNetwork) {
+      Notify.create({
+        type: 'negative',
+        message: `Wrong network, connect to ${networkInfo.chainName}`,
+      });
+      return;
+    }
+
+    const connectedAccount = await wallet.checkAlreadyConnected();
+    if (connectedAccount) {
+      this.walletStore.connectedAddress = connectedAccount;
+    }
+
     wallet.onChainChanged(async () => {
-      console.log('wallet.onChainChanged:');
       const isRightNetwork = await wallet.isRightNetwork();
       if (!isRightNetwork) {
-        // this.wrongNetworkModal = true;
         Notify.create({
           type: 'negative',
           message: `Wrong network, connect to ${networkInfo.chainName}`,
@@ -56,48 +76,24 @@ export default defineComponent({
     });
 
     wallet.onAccountsChanged(async (accounts: Array<string>) => {
-      console.log('wallet.onAccountsChanged:');
       if (accounts.length == 0) {
-        // this.connectToWalletModal = true;
-        console.log('connectToWalletModal:');
+        this.walletStore.connectedAddress = null;
       } else {
         const connectedAccount = await wallet.checkAlreadyConnected();
         if (connectedAccount) {
-          console.log('connectedAccount:', connectedAccount);
-          // await this.saveConnectedAccount(connectedAccount);
-        } else {
-          // this.connectToWalletModal = true;
-          console.log('connectToWalletModal:');
+          this.walletStore.connectedAddress = connectedAccount;
         }
       }
     });
+  },
 
-    const isRightNetwork = await wallet.isRightNetwork();
-    if (!isRightNetwork) {
-      // this.wrongNetworkModal = true;
-      Notify.create({
-        type: 'negative',
-        message: `Wrong network, connect to ${networkInfo.chainName}`,
-      });
-      return;
-    }
-
-    try {
-      const connectedAccount = await wallet.checkAlreadyConnected();
-      if (connectedAccount) {
-        // console.log('connectedAccount:', connectedAccount);
-        // await this.saveConnectedAccount(connectedAccount);
-      } else {
-        // this.connectToWalletModal = true;
-        console.log('else connectToWalletModal:');
+  methods: {
+    connect: async function () {
+      let connectedAccounts = await wallet.connectMetamask();
+      if (connectedAccounts) {
+        this.walletStore.connectedAddress = connectedAccounts[0];
       }
-    } catch (err) {
-      console.log('err:', err);
-      Notify.create({
-        type: 'negative',
-        message: err as string,
-      });
-    }
+    },
   },
 });
 </script>

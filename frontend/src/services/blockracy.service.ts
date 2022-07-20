@@ -17,33 +17,13 @@ class BlockracyService extends BaseService {
   }
 
   protected async init(): Promise<void> {
-    this.contract.on(
-      'ProposalCreated',
-      (
-        proposalId: BigNumber,
-        proposer: string,
-        title: string,
-        startTime: number,
-        endTime: number
-      ) => {
-        proposalId;
-        proposer;
-        title;
-        startTime;
-        endTime;
-        // TODO update Proposal store
-      }
-    );
+    this.contract.on('ProposalCreated', () => {
+      this.getAllProposals();
+    });
 
-    this.contract.on(
-      'VotePlaced',
-      (proposalId: BigNumber, voter: string, voteAnswer: boolean) => {
-        proposalId;
-        voter;
-        voteAnswer;
-        // TODO update Proposal store
-      }
-    );
+    this.contract.on('VotePlaced', () => {
+      this.getAllProposals();
+    });
   }
 
   async submitProposal(
@@ -62,7 +42,7 @@ class BlockracyService extends BaseService {
 
   async getAllProposals(): Promise<Proposal[]> {
     const proposals = await this.connectedContract.getAllProposals();
-    this.proposalStore.setProposals(proposals);
+    this.proposalStore.proposals = proposals;
     return proposals;
   }
 

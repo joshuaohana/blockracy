@@ -6,7 +6,7 @@ export const networkInfo: NetworkInfo = {
   providerUrl:
     'https://eth-rinkeby.alchemyapi.io/v2/' + process.env.RINKEBY_PROVIDER_ID,
   contracts: {
-    blockracy: '0x64382Ab7B37088529803968a1bB1caCA63889cA8',
+    blockracy: '0xB27f488FDc6b0D75503cD017150509169b8A0598',
   },
   local: false,
   rpcUrls: ['https://rinkeby.infura.io/v3/'],

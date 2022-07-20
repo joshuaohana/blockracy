@@ -2,19 +2,14 @@
 
 ## app
 
-componentize the frontend
-
 finish a few more tests
 
 add error handling on all calls to blockracy.service
 
-## header
-
-make connect button in header just basics
+capture and intelligently respond to all events
 
 ## new proposal button
 
-fix up ui
 make start and end dates more friendly
 
 ## proposal deatils

@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.9;
 
-// TODO / ideas
-//  - remove startTime must be in future requirement
-//  - add createdAt param
-
 /**
  * @dev Main Blockracy contract
  * currently contains all logic and token issuance
@@ -22,6 +18,7 @@ contract Blockracy {
         string description;
         uint startTime;
         uint endTime;
+        uint createdAt;
         uint yesVotes;
         uint noVotes;
     }
@@ -72,7 +69,6 @@ contract Blockracy {
      *
      * Requirements:
 
-     * - proposal's `startTime` must be in the future
      * - proposal's `endTime` must be after its `startTime`
      */
     function submitProposal(
@@ -81,10 +77,6 @@ contract Blockracy {
         uint startTime,
         uint endTime
     ) public returns (uint proposalId) {
-        require(
-            startTime >= block.timestamp,
-            "Start time must be in the future"
-        );
         require(endTime >= startTime, "End time must be after start time");
 
         proposalId = proposals.length;
@@ -96,6 +88,7 @@ contract Blockracy {
                 description: description,
                 startTime: startTime,
                 endTime: endTime,
+                createdAt: block.timestamp,
                 yesVotes: 0,
                 noVotes: 0
             })

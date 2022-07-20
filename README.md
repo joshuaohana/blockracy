@@ -14,6 +14,10 @@
 `npx hardhat test`
 `npx hardhat coverage`
 
+## Build
+
+`quasar build`
+
 ## Frontend
 
 1. `cd frontend`
