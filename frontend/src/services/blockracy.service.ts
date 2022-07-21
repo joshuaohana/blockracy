@@ -1,7 +1,6 @@
 import blockracyContract from '../../../artifacts/contracts/Blockracy.sol/Blockracy.json';
 import { networkInfo } from './network.info';
 import BaseService from './base.service';
-import { BigNumber } from 'ethers';
 import {
   Proposal,
   ProposalStore,
@@ -48,6 +47,13 @@ class BlockracyService extends BaseService {
 
   async vote(proposalId: number, voteAnswer: boolean): Promise<void> {
     await this.connectedContract.vote(proposalId, voteAnswer);
+  }
+
+  async alreadyVoted(proposalId: number): Promise<boolean> {
+    return await this.connectedContract.voted(
+      this.connectedAddress,
+      proposalId
+    );
   }
 }
 

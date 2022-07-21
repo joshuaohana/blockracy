@@ -19,19 +19,19 @@
           />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <p>Start Time</p>
+          <h6>Start Time</h6>
           <q-date v-model="startTime" mask="YYYY-MM-DD HH:mm" />
           <q-time v-model="startTime" mask="YYYY-MM-DD HH:mm" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <p>End Time</p>
+          <h6>End Time</h6>
           <q-date v-model="endTime" mask="YYYY-MM-DD HH:mm" />
           <q-time v-model="endTime" mask="YYYY-MM-DD HH:mm" />
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn label="Submit" @click="submitProposal" />
+          <q-btn label="Submit" @click="submitProposal" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

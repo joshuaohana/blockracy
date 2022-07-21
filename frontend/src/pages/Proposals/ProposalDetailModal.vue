@@ -15,9 +15,12 @@
         <p>noVotes: {{ proposal.noVotes }}</p>
       </q-card-section>
 
-      <q-card-actions class="text-primary">
+      <q-card-actions class="text-primary" v-if="!alreadyVoted">
         <q-btn label="vote yes" v-close-popup @click="vote(true)" />
         <q-btn label="vote no" v-close-popup @click="vote(false)" />
+      </q-card-actions>
+      <q-card-actions class="text-primary" v-if="alreadyVoted">
+        <q-btn label="already voted" disabled />
       </q-card-actions>
 
       <q-card-actions align="right" class="text-primary">
@@ -52,7 +55,11 @@ export default defineComponent({
       description: ref<string>(''),
       startTime: ref<string>(''),
       endTime: ref<string>(''),
+      alreadyVoted: ref(false),
     };
+  },
+  created: async function () {
+    this.alreadyVoted = await blockracy.alreadyVoted(this.proposal.proposalId);
   },
   emits: ['hide'],
   methods: {
